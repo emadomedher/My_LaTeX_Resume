@@ -1,0 +1,420 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=2 cm, % seperation between body and page edge from the left
+    right=2 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+\usepackage[explicit]{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{0, 79, 144} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle={Emad O. Medher's CV},
+    pdfauthor={Emad O. Medher},
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage[default, type1]{sourcesanspro}
+
+% Some settings:
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0.15cm} % set column seperation
+\makeatletter
+\let\ps@customFooterStyle\ps@plain % Copy the plain style to customFooterStyle
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small Emad O. Medher - Page \thepage{} of \pageref*{LastPage}}
+}{}{} % replace number by desired string
+\makeatother
+\pagestyle{customFooterStyle}
+
+\titleformat{\section}{
+    % avoid page braking right after the section title
+    \needspace{4\baselineskip}
+    % make the font size of the section title large and color it with the primary color
+    \Large\color{primaryColor}
+}{
+}{
+}{
+    % print bold title, give 0.15 cm space and draw a line of 0.8 pt thickness
+    % from the end of the title to the end of the body
+    \textbf{#1}\hspace{0.15cm}\titlerule[0.8pt]\hspace{-0.1cm}
+}[] % section title formatting
+
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
+
+% \renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{threecolentry}[3][]{
+    \onecolentry
+    \def\thirdColumn{#3}
+    \setcolumnwidth{1 cm, \fill, 4.5 cm}
+    \begin{paracol}{3}
+    {\raggedright #2} \switchcolumn
+}{
+    \switchcolumn \raggedleft \thirdColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for three column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\color{primaryColor}\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+\newcommand{\placelastupdatedtext}{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+    \put(
+        \LenToUnit{\paperwidth-2 cm-0.2 cm+0.05cm},
+        \LenToUnit{\paperheight-1.0 cm}
+    ){\vtop{{\null}\makebox[0pt][c]{
+        \small\color{gray}\textit{Last updated in May 2025}\hspace{\widthof{Last updated in May 2025}}
+    }}}%
+  }%
+}%
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
+
+    \placelastupdatedtext
+    \begin{header}
+        \fontsize{30 pt}{30 pt}
+        \textbf{Emad O. Medher}
+
+        \vspace{0.3 cm}
+
+        \normalsize
+        \mbox{{\footnotesize\faMapMarker*}\hspace*{0.13cm}Jeddah, Saudi Arabia}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{mailto:emad@medher.online}{{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}emad@medher.online}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{tel:+966-502-411-425}{{\footnotesize\faPhone*}\hspace*{0.13cm}+966 502 411 425}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://emad.medher.online/}{{\footnotesize\faLink}\hspace*{0.13cm}emad.medher.online}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://linkedin.com/in/emadmedher}{{\footnotesize\faLinkedinIn}\hspace*{0.13cm}emadmedher}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://github.com/emadomedher}{{\footnotesize\faGithub}\hspace*{0.13cm}emadomedher}}%
+    \end{header}
+
+    \vspace{0.3 cm - 0.3 cm}
+
+    \section{Software Engineer | Team Leader | Cloud-Native Architect}
+
+    \begin{onecolentry}
+        Seasoned software engineer and team leader with a record of delivering scalable cloud-native systems, driving DevOps transformation, and building high-performing teams that ship reliably and fast.
+    \end{onecolentry}
+
+    \vspace{0.2 cm}
+
+    \begin{onecolentry}
+        Specialized in distributed systems, DevOps culture, and emerging technologies including blockchain and AI—applying them to deliver secure, production-ready solutions.
+    \end{onecolentry}
+
+    
+    % --- New Core Skills Section ---
+    \section{Core Skills}
+        \begin{onecolentry}
+            \textbf{Cloud-Native Architectures}, Kubernetes, OpenShift, AWS, Azure, GitOps, Terraform,
+            CI/CD (GitLab, Jenkins), Docker, Linux, Observability (Prometheus, Grafana),
+            DevSecOps, Infrastructure-as-Code, Microservices, Distributed Systems,
+            AI/ML Platforms, Blockchain Technologies
+        \end{onecolentry}
+    % --- End Core Skills Section ---
+
+
+    \section{Experience}
+
+    \begin{twocolentry}{
+        Jeddah, Saudi Arabia
+
+        March 2023 – Present
+    }
+        \textbf{Career Sabbatical}, Freelance \& Personal Development
+        \begin{highlights}
+            \item Took a strategic sabbatical to deepen expertise in cloud-native architectures, AI tools, and platform engineering while delivering select DevOps consulting for startups and SMBs.
+            \item Completed advanced training in GitOps, Kubernetes performance tuning, and observability best practices.
+            \item Delivered infrastructure and CI/CD improvements that increased client deployment frequency and reliability by up to 40\%.
+            \item Contributed to open-source projects and stayed active in technical communities to maintain industry visibility.
+        \end{highlights}
+    \end{twocolentry}
+
+    \vspace{0.2 cm}
+
+    \begin{twocolentry}{
+        Riyadh, Saudi Arabia
+
+        December 2019 – March 2023
+    }
+        \textbf{Senior DevOps Engineer}, Saudi Technology and Security Comprehensive Control Co. Ltd. (Tahakom)
+        \begin{highlights}
+            \item Spearheaded a \textbf{cloud-native DevSecOps lifecycle}, cutting release cycles from 2 weeks to 3 days through CI/CD automation and infrastructure-as-code.
+            \item Led DevOps operations for \textbf{Nafadh (www.iam.gov.sa)}, maintaining 99.95\% uptime for millions of daily users.
+            \item Built centralized \textbf{observability} (logging, tracing, metrics) reducing mean-time-to-resolution by 35\%.
+            \item Deployed and scaled \textbf{OpenShift and Kubernetes clusters} across on-prem and hybrid environments, supporting 100+ microservices.
+            \item Administered and optimized the \textbf{AI compute cluster} for identity division ML workloads.
+            \item Championed DevOps culture—mentored 10+ engineers, ran hands-on training, and embedded automation-first practices across teams.
+        \end{highlights}
+
+        \begin{onecolentry}
+            \textbf{Contact:} Ahmed Alotaibi - Manager of Enterprise Digital Solutions,
+            \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/ahmedota/}{{\footnotesize\faLinkedinIn}\hspace*{0.13cm}ahmedota}}%
+        \end{onecolentry}
+    \end{twocolentry}
+
+    \vspace{0.2 cm}
+
+    \begin{twocolentry}{
+        Riyadh, Saudi Arabia
+
+        April 2019 – December 2019
+    }
+        \textbf{Software Engineer - Products DevOps}, MRSOOL
+        \begin{highlights}
+            \item Maintained reliability and performance for a high-traffic delivery platform serving 4M+ users, achieving 99.9\% uptime.
+            \item Owned deployment pipelines and first-response security mitigation, reducing incidents by 25\%.
+            \item Implemented system optimizations that lowered infrastructure costs by 20\% while increasing throughput.
+            \item Mentored junior engineers on CI/CD, monitoring, and production troubleshooting.
+        \end{highlights}
+
+        \begin{onecolentry}
+            \textbf{Contact:} Ayman Alsanad - Co-Founder \& CEO at Mrsool,
+            \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/ayman-alsanad-3817274/}{{\footnotesize\faLinkedinIn}\hspace*{0.13cm}ayman-alsanad}}%
+        \end{onecolentry}
+    \end{twocolentry}
+
+    \vspace{0.2 cm}
+
+    \begin{twocolentry}{
+        Dhahran, Saudi Arabia
+
+        July 2017 – April 2019
+    }
+        \textbf{Technical Development Team Leader \& Project Management Supervisor}, Innovative Software L.L.C
+        \begin{highlights}
+            \item Led cross-functional teams delivering enterprise software solutions to major clients on time and within budget.
+            \item Established an in-house mobile development team from 0 to 6 engineers, eliminating third-party dependencies and reducing annual costs by 80\%.
+            \item Standardized architecture and development practices across 10+ projects, improving delivery speed by 30\%.
+            \item Introduced measurable KPIs and automated performance reviews, increasing team productivity and retention.
+            \item Spearheaded a full office network upgrade, improving performance and support scalability.
+        \end{highlights}
+
+        \begin{onecolentry}
+            \textbf{Contact:} Loai Labani - President at Innosoft SA,
+            \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/loailabani/}{{\footnotesize\faLinkedinIn}\hspace*{0.13cm}loailabani}}%
+        \end{onecolentry}
+    \end{twocolentry}
+
+    \vspace{0.2 cm}
+
+    \begin{twocolentry}{
+        Jeddah, Saudi Arabia
+
+        February 2016 – July 2017
+    }
+        \textbf{Logistics and TMS Software Developer}, Flow Progressive Logistics
+        \begin{highlights}
+            \item Architected and implemented a full ERP–WMS bi-directional integration with \textit{WAMAS\textsuperscript{\textregistered} by SSI SCHAEFER}, eliminating manual entry and saving thousands of hours annually.
+            \item Designed and developed "STREAM", a centralized KPI repository and machine learning engine for predictive analytics and decision support.
+            \item Automated logistics workflows end-to-end, increasing throughput and reducing operational errors by 30\%.
+            \item Collaborated with operations leaders to identify bottlenecks and deliver measurable process improvements.
+        \end{highlights}
+
+        \begin{onecolentry}
+            \textbf{Contact:} Bader Abu Sulaiman,
+            \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/bader-abu-sulaiman-08a28276/}{{\footnotesize\faLinkedinIn}\hspace*{0.13cm}bader-abu-sulaiman}}%
+        \end{onecolentry}
+    \end{twocolentry}
+
+    \vspace{0.2 cm}
+
+    \begin{twocolentry}{
+        Manila, Philippines
+
+        October 2012 – February 2014
+    }
+        \textbf{Startup Founder \& Early Blockchain Engineer}, Bitfountain, WeExchange, Bithorse.co
+        \begin{highlights}
+            \item Co-founded and engineered Bithorse.co, a blockchain-based probability betting platform featuring real-time virtual horse races powered by on-chain randomness.
+            \item Designed secure wallet infrastructure and transaction flows for early crypto applications, enabling scalable and resilient deployments.
+            \item Contributed to early blockchain communities and served as an early technical investor in pioneering projects including Ripple and Ethereum.
+        \end{highlights}
+    \end{twocolentry}
+
+    \section{Education}
+
+    \begin{threecolentry}{\textbf{BS}}{
+        May 2006 – March 2012 (Inc.)
+    }
+        \textbf{KFUPM}, Dhahran
+        \begin{highlights}
+            \item Completed advanced coursework in software architecture, data structures, and distributed systems before pursuing entrepreneurial ventures in early blockchain technologies.
+            \item Left program to pursue a once-in-a-lifetime opportunity in the early days of emerging blockchain and cryptocurrency space, launching early-stage ventures and contributing to foundational ecosystem projects.
+        \end{highlights}
+    \end{threecolentry}
+
+    \section{Professional Achievements \& Tech Community Impact}
+
+    \begin{twocolentry}{
+        September 2017 – September 2018
+    }
+        \textbf{Event Organizer \& Hackathon Coach}
+        \begin{highlights}
+            \item Organized GE's \textbf{Predix and IoT Hackathons} in Dhahran and Riyadh, coaching 100+ participants and ensuring on-time project delivery.
+        \end{highlights}
+    \end{twocolentry}
+
+    \begin{twocolentry}{
+        August 2012 – July 2013
+    }
+        \textbf{Skills Competition Coach}
+        \begin{highlights}
+            \item Founded KFUPM's first digital skills competition and later mentored participants in the \textbf{Saudi Skills National Competition}, judging technical performance and guiding students to success.
+        \end{highlights}
+    \end{twocolentry}
+
+    \begin{twocolentry}{
+        August 2018
+    }
+        \textbf{Hackathon Excellence}
+        \begin{highlights}
+            \item Recognized at the record-breaking Hajj Hackathon and NASA Space Apps Hackathon for rapid prototyping and practical, innovative solutions.
+        \end{highlights}
+    \end{twocolentry}
+
+    \begin{twocolentry}{
+        June 2019
+    }
+        \textbf{Technical Judge \& Mentor}
+        \begin{highlights}
+            \item Served as a \textbf{Technical Feasibility Judge} at King Faisal University's first hackathon, evaluating 50+ submissions for viability and scalability and mentoring teams during the event.
+        \end{highlights}
+    \end{twocolentry}
+
+    \begin{twocolentry}{
+        October 2017
+    }
+        \textbf{Public Speaking \& Technical Outreach}
+        \begin{highlights}
+            \item Delivered a keynote seminar titled \textit{"Debug, Reboot, Upgrade"} at King Faisal University to 300+ attendees, covering cybersecurity, the dark web, and cutting-edge software trends.
+        \end{highlights}
+    \end{twocolentry}
+
+    \begin{twocolentry}{
+        April 2010 – February 2011
+    }
+        \textbf{Workshop \& Community Leader}
+        \begin{highlights}
+            \item Hosted weekly workshops at KFUPM, including \textbf{LinuxTalk}, \textbf{HackTalk}, and \textbf{TechTalk}, fostering a collaborative tech learning community focused on software development and open-source tools.
+        \end{highlights}
+    \end{twocolentry}
+
+\end{document}
